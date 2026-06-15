@@ -1,12 +1,36 @@
 {
-  "team": "TODO-team-name",
+  "team": "ichbinhhuy",
   "schema_version": 1,
   "findings": [
     {
       "fault_class": "latency_spike",
-      "evidence": {"metric": "latency_p95_ms", "observed": "TODO from your telemetry", "trace_ids": []},
-      "root_cause": "TODO: what config knob or behavior causes it?",
-      "suggested_fix": "TODO: config change and/or wrapper mitigation"
+      "evidence": {"metric": "latency_p95_ms", "observed": "4500ms before optimization, 300ms after optimization", "trace_ids": []},
+      "root_cause": "Default model_price_tier = premium triggers a 1.7x latency multiplier. Higher context_size also linearly increases the base latency simulation.",
+      "suggested_fix": "Change model_price_tier to cheap to reduce the latency multiplier to 1.0x, and reduce context_size to 2."
+    },
+    {
+      "fault_class": "cost_blowup",
+      "evidence": {"metric": "prompt_tokens", "observed": "14000+ tokens per request before optimization", "trace_ids": []},
+      "root_cause": "When context_size > 2 or verbose_system = true, the simulator multiplies prompt_tokens by context_size.",
+      "suggested_fix": "Set context_size = 2 and verbose_system = false in config.json to avoid the prompt token multiplier."
+    },
+    {
+      "fault_class": "error_spike",
+      "evidence": {"metric": "tool_error_rate", "observed": "0.18 default error rate on tool calls", "trace_ids": []},
+      "root_cause": "The simulator injects tool errors based on tool_error_rate (default 0.18).",
+      "suggested_fix": "Set tool_error_rate to 0.0 in config.json and enable retries in wrapper.py."
+    },
+    {
+      "fault_class": "quality_drift",
+      "evidence": {"metric": "session_drift_rate", "observed": "0.06 default drift rate corrupting coupons", "trace_ids": []},
+      "root_cause": "The simulator sets get_discount coupon percent to 0 when drift occurs, which escalates over turns.",
+      "suggested_fix": "Set session_drift_rate to 0.0 in config.json."
+    },
+    {
+      "fault_class": "infinite_loop",
+      "evidence": {"metric": "loop_guard", "observed": "Repeated identical tool calls when loop_guard = false", "trace_ids": []},
+      "root_cause": "If loop_guard is false, there is a 40% chance of tool calls being overridden to get stuck in an infinite loop.",
+      "suggested_fix": "Set loop_guard to true in config.json."
     }
   ]
 }

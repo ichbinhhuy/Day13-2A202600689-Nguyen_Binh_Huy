@@ -1,0 +1,21 @@
+{
+  "team": "ichbinhhuy",
+  "phase": "private",
+  "headline": 87.57,
+  "sub": {
+    "correct": 0.57,
+    "quality": 0.7345,
+    "error": 1.0,
+    "latency": 0.787,
+    "cost": 1.0,
+    "drift": 0.6378,
+    "prompt": 0.7379
+  },
+  "diag_f1": 0.625,
+  "n": 80,
+  "n_correct": 45,
+  "judge_mode": "offline",
+  "weights_hash": "e81a8ed58d93",
+  "key_hash": "7e3905b75db0",
+  "sig": "e5d358cba29da6ef24b59800d423982a554361e2fa1c70ad3401adc357a1dca4"
+}
